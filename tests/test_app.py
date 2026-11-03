@@ -61,7 +61,12 @@ def iniciar_sesion(cliente):
 def test_portada_publica_muestra_y_filtra_anuncios(cliente):
     respuesta = cliente.get("/")
     assert respuesta.status_code == 200
-    assert "Bienvenida" in respuesta.get_data(as_text=True)
+    contenido = respuesta.get_data(as_text=True)
+    assert "Bienvenida" in contenido
+    assert "/static/css/estilos.css" in contenido
+    estilos = cliente.get("/static/css/estilos.css")
+    assert estilos.status_code == 200
+    assert b".welcome-banner" in estilos.data
     respuesta = cliente.get("/?q=sin-resultados")
     assert respuesta.status_code == 200
     assert "No hay anuncios para mostrar" in respuesta.get_data(as_text=True)
